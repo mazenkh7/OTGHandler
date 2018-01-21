@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">OTGHandler</string>
+    <string name="tile_label">Host Mode</string>
+</resources>
