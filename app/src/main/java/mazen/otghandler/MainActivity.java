@@ -1,13 +1,10 @@
 package mazen.otghandler;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -27,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         stopButton = (Button) findViewById(R.id.stopButton);
         serviceStatus = (TextView) findViewById(R.id.fv);
         setOnBootCheckBox = (CheckBox) findViewById(R.id.checkBox);
-        final NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        final NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         pref = getSharedPreferences("Preferences",MODE_PRIVATE);
 
         if(pref.getBoolean("StartOnBoot",false)){

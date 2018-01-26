@@ -7,12 +7,9 @@ import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import android.util.Log;
 
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 
 import static mazen.otghandler.R.drawable.ic_usb_black_24dp;
 
@@ -23,16 +20,7 @@ public class QuickSettingsService
 
     private static final String SERVICE_STATUS_FLAG = "serviceStatus";
     private static final String PREFERENCES_KEY = "com.google.android_quick_settings";
-
-    @Override
-    public void onTileAdded() {
-        Log.d("QS", "Tile added");
-    }
-
-    @Override
-    public void onStartListening() {
-        Log.d("QS", "Start listening");
-    }
+    public boolean bootComplete = false;
 
     @Override
     public void onClick() {
@@ -40,22 +28,20 @@ public class QuickSettingsService
     }
 
     @Override
-    public void onStopListening() {
-        Log.d("QS", "Stop Listening");
+    public void onStartListening() {
+        if(!bootComplete){
+            Tile tile = getQsTile();
+            tile.setState(Tile.STATE_INACTIVE);
+            tile.updateTile();
+            bootComplete = true;
+        }
     }
-
-    @Override
-    public void onTileRemoved() {
-        Log.d("QS", "Tile removed");
-    }
-
     private void updateTile() {
 
         Tile tile = this.getQsTile();
         boolean isActive = getServiceStatus();
 
         Icon newIcon;
-        String newLabel;
         int newState;
 
         if (isActive) {
@@ -72,8 +58,8 @@ public class QuickSettingsService
                 }
                 outputStream.writeBytes("exit\n");
                 outputStream.flush();
-            }catch (Exception e){}
-            newLabel = "Host On";
+            } catch (Exception e) {
+            }
 
             newIcon = Icon.createWithResource(getApplicationContext(),
                     ic_usb_black_24dp);
@@ -94,8 +80,8 @@ public class QuickSettingsService
                 }
                 outputStream.writeBytes("exit\n");
                 outputStream.flush();
-            }catch (Exception e){}
-            newLabel = "Host Off";
+            } catch (Exception e) {
+            }
 
             newIcon =
                     Icon.createWithResource(getApplicationContext(),
@@ -105,7 +91,6 @@ public class QuickSettingsService
         }
 
         // Change the UI of the tile.
-        tile.setLabel(newLabel);
         tile.setIcon(newIcon);
         tile.setState(newState);
 

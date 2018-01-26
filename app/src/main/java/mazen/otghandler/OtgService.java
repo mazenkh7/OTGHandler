@@ -19,17 +19,8 @@ public class OtgService extends IntentService {
     public OtgService() {
         super("OTG Service");
     }
-
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        final NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder ogn = new NotificationCompat.Builder(getApplicationContext());
-        ogn.setContentTitle("USB Host Automator")
-                .setContentText("Service is running")
-                .setSmallIcon(R.drawable.ic_usb_black_24dp)
-                .setOngoing(true);
-
-//        manager.notify(1,ogn.build());
         while(isRunning) {
             try {
                 Process su = Runtime.getRuntime().exec("su");
@@ -44,7 +35,6 @@ public class OtgService extends IntentService {
                 BufferedReader result = new BufferedReader(new InputStreamReader(su.getInputStream()));
                 int x = Integer.parseInt(result.readLine());
                 if (x==8)
-//                    System.exit(0);
                     outputStream.writeBytes("echo hoston > /sys/devices/platform/ff100000.hisi_usb/plugusb\n");
                 else
                     outputStream.writeBytes("echo hostoff > /sys/devices/platform/ff100000.hisi_usb/plugusb\n");
@@ -52,42 +42,15 @@ public class OtgService extends IntentService {
                 outputStream.flush();
                 outputStream.writeBytes("exit\n");
                 outputStream.flush();
-//                try {
-//                    su.waitFor();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
                 outputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
-                Thread.sleep(2000);
+                Thread.sleep(3250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
-//
-//    public static void sudo(String...strings) {
-//        try{
-//            Process su = Runtime.getRuntime().exec("su");
-//            DataOutputStream outputStream = new DataOutputStream(su.getOutputStream());
-//            for (String s : strings) {
-//                outputStream.writeBytes(s+"\n");
-//                outputStream.flush();
-//            }
-//
-//            outputStream.writeBytes("exit\n");
-//            outputStream.flush();
-//            try {
-//                su.waitFor();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            outputStream.close();
-//        }catch(IOException e){
-//            e.printStackTrace();
-//        }
-//    }
 }
